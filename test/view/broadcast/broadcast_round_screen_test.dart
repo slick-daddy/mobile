@@ -47,6 +47,34 @@ void main() {
       expect(find.text('Players'), findsOneWidget);
       expect(find.text('Teams'), findsNothing);
     });
+
+    testWidgets('Shows an error when the round fails to load', variant: kPlatformVariant, (
+      tester,
+    ) async {
+      final app = await makeTestProviderScopeApp(
+        tester,
+        home: BroadcastRoundScreen(broadcast: _finishedBroadcast),
+        overrides: {
+          lichessClientProvider: lichessClientProvider.overrideWith(
+            (ref) => LichessClient(_roundErrorBroadcastClient, ref),
+          ),
+        },
+      );
+
+      await tester.pumpWidget(app);
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      // Load the tournament
+      await tester.pump();
+
+      // Fail to load the round
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.text('Cannot load broadcast round'), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+    });
   });
 
   group('Test boards tab', () {
@@ -659,6 +687,17 @@ final _finishedBroadcastClient = MockClient((request) {
   if (request.url.path == '/api/broadcast/-/-/S5VCwuVn') {
     return mockResponse(
       _finishedRoundResponse,
+      200,
+      headers: {'content-type': 'application/json; charset=utf-8'},
+    );
+  }
+  return mockResponse('', 404);
+});
+
+final _roundErrorBroadcastClient = MockClient((request) {
+  if (request.url.path == '/api/broadcast/AQ28hmmO') {
+    return mockResponse(
+      _finishedTournamentResponse,
       200,
       headers: {'content-type': 'application/json; charset=utf-8'},
     );
