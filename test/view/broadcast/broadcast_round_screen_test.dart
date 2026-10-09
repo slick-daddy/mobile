@@ -65,10 +65,8 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-      // Load the tournament
       await tester.pump();
 
-      // Fail to load the round
       await tester.pump();
       await tester.pump();
 

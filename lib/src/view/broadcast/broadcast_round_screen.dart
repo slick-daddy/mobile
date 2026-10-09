@@ -377,7 +377,6 @@ class _BroadcastRoundScreenState()
       case AsyncData(value: final tournament):
         final roundId = _selectedRoundId ?? tournament.defaultRoundId;
 
-        // Null until the round is loaded, so this fires once when it first loads.
         ref.listen<bool?>(
           broadcastRoundControllerProvider(roundId)
               .select((state) => state.value?.games.isNotEmpty),
@@ -388,7 +387,6 @@ class _BroadcastRoundScreenState()
           },
         );
 
-        // Only what the scaffold needs, so that game updates don't rebuild the whole screen.
         final roundState = ref.watch(
           broadcastRoundControllerProvider(roundId).select(
             (state) => switch (state) {
