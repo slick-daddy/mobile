@@ -12,6 +12,7 @@ import 'package:lichess_mobile/src/widgets/board_thumbnail.dart';
 import 'package:lichess_mobile/src/widgets/platform_context_menu_button.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../network/fake_http_client_factory.dart';
 import '../../test_helpers.dart';
 import '../../test_provider_scope.dart';
 
@@ -55,9 +56,9 @@ void main() {
         tester,
         home: BroadcastRoundScreen(broadcast: _finishedBroadcast),
         overrides: {
-          lichessClientProvider: lichessClientProvider.overrideWith(
-            (ref) => LichessClient(_roundErrorBroadcastClient, ref),
-          ),
+          httpClientFactoryProvider: httpClientFactoryProvider.overrideWith((ref) {
+            return FakeHttpClientFactory(() => _roundErrorBroadcastClient);
+          }),
         },
       );
 

@@ -187,188 +187,6 @@ class _BroadcastRoundScreenState()
     });
   }
 
-  Widget _buildContent(
-    BuildContext context,
-    AsyncValue<BroadcastTournament> asyncTournament,
-    ({BroadcastRound? round, bool? isSubscribed, bool hasError}) roundState,
-  ) {
-    return switch (roundState) {
-      (round: final round?, :final isSubscribed, hasError: _) => PlatformScaffold(
-        extendBody: Theme.of(context).platform == TargetPlatform.iOS,
-        appBar: PlatformAppBar(
-          title: AppBarTitleText(
-            asyncTournament.value?.data.name ?? widget.broadcast.title,
-            maxLines: 2,
-          ),
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: <Widget>[
-              Tab(text: context.l10n.broadcastOverview),
-              Tab(text: context.l10n.broadcastBoards),
-              Tab(text: context.l10n.players),
-              if (asyncTournament.value?.data.teamTable == true)
-                Tab(text: context.l10n.broadcastTeams),
-            ],
-          ),
-          actions: [
-            if (isSubscribed case final isSubscribed?)
-              if (_selectedRoundId ?? asyncTournament.value?.defaultRoundId case final roundId?)
-                SemanticIconButton(
-                  icon: Icon(isSubscribed ? Icons.notifications : Icons.notifications_none),
-                  semanticsLabel: isSubscribed ? context.l10n.unsubscribe : context.l10n.subscribe,
-                  onPressed: () async {
-                    try {
-                      await ref
-                          .read(broadcastRoundControllerProvider(roundId).notifier)
-                          .setSubscribed(_selectedTournamentId, !isSubscribed);
-                    } catch (_) {
-                      if (context.mounted) {
-                        showSnackBar(
-                          context,
-                          'Could not update the subscription',
-                          type: SnackBarType.error,
-                        );
-                      }
-                    }
-                  },
-                ),
-            ContextMenuIconButton(
-              icon: const Icon(Icons.more_horiz),
-              semanticsLabel: context.l10n.menu,
-              actions: [
-                ContextMenuAction(
-                  icon: Icons.settings,
-                  label: context.l10n.settingsSettings,
-                  onPressed: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      isDismissible: true,
-                      isScrollControlled: true,
-                      constraints: BoxConstraints(maxHeight: MediaQuery.heightOf(context) * 0.6),
-                      builder: (_) => const _BroadcastSettingsBottomSheet(),
-                    );
-                  },
-                ),
-                ContextMenuAction(
-                  icon: Icons.filter_list,
-                  label: context.l10n.filterGames,
-                  onPressed: () {
-                    final currentRoundId =
-                        _selectedRoundId ?? asyncTournament.value?.defaultRoundId;
-                    final gamesMap = currentRoundId != null
-                        ? ref.read(broadcastRoundControllerProvider(currentRoundId)).value?.games
-                        : null;
-                    final games = gamesMap?.values ?? const [];
-                    final allCount = games.length;
-                    final ongoingCount = games.where((g) => g.isOngoing).length;
-                    final uniqueTeams = games
-                        .expand((g) => g.players.values.map((p) => p.player.team))
-                        .nonNulls
-                        .toIList()
-                        .removeDuplicates()
-                        .sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
-                    final teams = uniqueTeams.isNotEmpty
-                        ? uniqueTeams.insert(0, context.l10n.broadcastAllTeams)
-                        : null;
-
-                    showModalBottomSheet<void>(
-                      context: context,
-                      isDismissible: true,
-                      isScrollControlled: true,
-                      constraints: BoxConstraints(maxHeight: MediaQuery.heightOf(context) * 0.6),
-                      builder: (_) => _BroadcastGamesFilterBottomSheet(
-                        filter,
-                        _teamFilter,
-                        allGamesCount: allCount,
-                        ongoingGamesCount: ongoingCount,
-                        onGameFilterChange: setGameFilter,
-                        teams: teams,
-                      ),
-                    );
-                  },
-                ),
-                ContextMenuAction(
-                  icon: Theme.of(context).platform == TargetPlatform.iOS
-                      ? Icons.ios_share_outlined
-                      : Icons.share_outlined,
-                  label: context.l10n.studyShareAndExport,
-                  onPressed: () => showBroadcastShareMenu(
-                    context,
-                    asyncTournament.value?.data ?? widget.broadcast.tour,
-                    round,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: <Widget>[
-            BroadcastOverviewTab(broadcast: widget.broadcast, tournamentId: _selectedTournamentId),
-            switch (asyncTournament) {
-              AsyncData(:final value) => BroadcastBoardsTab(
-                tournamentId: _selectedTournamentId,
-                roundId: _selectedRoundId ?? value.defaultRoundId,
-                tournamentSlug: value.data.slug,
-                showOnlyOngoingGames: filter == _BroadcastGameFilter.ongoing,
-                teamFilter: _teamFilter,
-              ),
-              _ => const SizedBox.shrink(),
-            },
-            BroadcastPlayersTab(tournamentId: _selectedTournamentId),
-            if (asyncTournament.value?.data.teamTable == true) ...[
-              switch (asyncTournament) {
-                AsyncData(:final value) => BroadcastTeamsTab(
-                  roundId: _selectedRoundId ?? value.defaultRoundId,
-                  tournamentId: _selectedTournamentId,
-                  tournamentSlug: value.data.slug,
-                  showTeamScores: value.data.showTeamScores == true,
-                ),
-                _ => const SizedBox.shrink(),
-              },
-            ],
-          ],
-        ),
-        bottomNavigationBar: switch (asyncTournament) {
-          AsyncData(:final value) => _BottomBar(
-            tournament: value,
-            roundId: _selectedRoundId ?? value.defaultRoundId,
-            setTournamentId: setTournamentId,
-            setRoundId: setRoundId,
-          ),
-          _ => const BottomBar.empty(),
-        },
-      ),
-      (round: _, isSubscribed: _, hasError: true) => PlatformScaffold(
-        extendBody: Theme.of(context).platform == TargetPlatform.iOS,
-        appBar: PlatformAppBar(title: AppBarTitleText(widget.broadcast.title, maxLines: 2)),
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Cannot load broadcast round'),
-              TextButton(
-                onPressed: () {
-                  final roundId = _selectedRoundId ?? asyncTournament.value?.defaultRoundId;
-                  if (roundId != null) {
-                    ref.invalidate(broadcastRoundControllerProvider(roundId));
-                  }
-                },
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      ),
-      (round: _, isSubscribed: _, hasError: _) => PlatformScaffold(
-        extendBody: Theme.of(context).platform == TargetPlatform.iOS,
-        appBar: PlatformAppBar(title: AppBarTitleText(widget.broadcast.title, maxLines: 2)),
-        body: const Center(child: CircularProgressIndicator.adaptive()),
-      ),
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     final asyncTour = ref.watch(broadcastTournamentProvider(_selectedTournamentId));
@@ -388,26 +206,186 @@ class _BroadcastRoundScreenState()
         );
 
         final roundState = ref.watch(
-          broadcastRoundControllerProvider(roundId).select(
-            (state) => switch (state) {
-              AsyncData(:final value) => (
-                round: value.round,
-                isSubscribed: value.isSubscribed,
-                hasError: false,
+          broadcastRoundControllerProvider(roundId)
+              .select<AsyncValue<({BroadcastRound round, bool? isSubscribed})>>(
+                (state) => switch (state) {
+                  AsyncData(:final value) => AsyncData((
+                    round: value.round,
+                    isSubscribed: value.isSubscribed,
+                  )),
+                  AsyncError(:final error, :final stackTrace) => AsyncError(error, stackTrace),
+                  _ => const AsyncLoading(),
+                },
               ),
-              AsyncError() => (round: null, isSubscribed: null, hasError: true),
-              _ => (round: null, isSubscribed: null, hasError: false),
-            },
-          ),
         );
 
-        return _buildContent(context, asyncTour, roundState);
+        return switch (roundState) {
+          AsyncData(value: (:final round, :final isSubscribed)) => PlatformScaffold(
+            extendBody: Theme.of(context).platform == TargetPlatform.iOS,
+            appBar: PlatformAppBar(
+              title: AppBarTitleText(tournament.data.name, maxLines: 2),
+              bottom: TabBar(
+                controller: _tabController,
+                tabs: <Widget>[
+                  Tab(text: context.l10n.broadcastOverview),
+                  Tab(text: context.l10n.broadcastBoards),
+                  Tab(text: context.l10n.players),
+                  if (tournament.data.teamTable == true) Tab(text: context.l10n.broadcastTeams),
+                ],
+              ),
+              actions: [
+                if (isSubscribed case final isSubscribed?)
+                  if (_selectedRoundId ?? tournament.defaultRoundId case final roundId?)
+                    SemanticIconButton(
+                      icon: Icon(isSubscribed ? Icons.notifications : Icons.notifications_none),
+                      semanticsLabel: isSubscribed
+                          ? context.l10n.unsubscribe
+                          : context.l10n.subscribe,
+                      onPressed: () async {
+                        try {
+                          await ref
+                              .read(broadcastRoundControllerProvider(roundId).notifier)
+                              .setSubscribed(_selectedTournamentId, !isSubscribed);
+                        } catch (_) {
+                          if (context.mounted) {
+                            showSnackBar(
+                              context,
+                              'Could not update the subscription',
+                              type: SnackBarType.error,
+                            );
+                          }
+                        }
+                      },
+                    ),
+                ContextMenuIconButton(
+                  icon: const Icon(Icons.more_horiz),
+                  semanticsLabel: context.l10n.menu,
+                  actions: [
+                    ContextMenuAction(
+                      icon: Icons.settings,
+                      label: context.l10n.settingsSettings,
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          isDismissible: true,
+                          isScrollControlled: true,
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery.heightOf(context) * 0.6,
+                          ),
+                          builder: (_) => const _BroadcastSettingsBottomSheet(),
+                        );
+                      },
+                    ),
+                    ContextMenuAction(
+                      icon: Icons.filter_list,
+                      label: context.l10n.filterGames,
+                      onPressed: () {
+                        final gamesMap = ref
+                            .read(broadcastRoundControllerProvider(roundId))
+                            .value
+                            ?.games;
+                        final games = gamesMap?.values ?? const [];
+                        final allCount = games.length;
+                        final ongoingCount = games.where((g) => g.isOngoing).length;
+                        final uniqueTeams = games
+                            .expand((g) => g.players.values.map((p) => p.player.team))
+                            .nonNulls
+                            .toIList()
+                            .removeDuplicates()
+                            .sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+                        final teams = uniqueTeams.isNotEmpty
+                            ? uniqueTeams.insert(0, context.l10n.broadcastAllTeams)
+                            : null;
+
+                        showModalBottomSheet<void>(
+                          context: context,
+                          isDismissible: true,
+                          isScrollControlled: true,
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery.heightOf(context) * 0.6,
+                          ),
+                          builder: (_) => _BroadcastGamesFilterBottomSheet(
+                            filter,
+                            _teamFilter,
+                            allGamesCount: allCount,
+                            ongoingGamesCount: ongoingCount,
+                            onGameFilterChange: setGameFilter,
+                            teams: teams,
+                          ),
+                        );
+                      },
+                    ),
+                    ContextMenuAction(
+                      icon: Theme.of(context).platform == TargetPlatform.iOS
+                          ? Icons.ios_share_outlined
+                          : Icons.share_outlined,
+                      label: context.l10n.studyShareAndExport,
+                      onPressed: () => showBroadcastShareMenu(context, tournament.data, round),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            body: TabBarView(
+              controller: _tabController,
+              children: <Widget>[
+                BroadcastOverviewTab(
+                  broadcast: widget.broadcast,
+                  tournamentId: _selectedTournamentId,
+                ),
+                BroadcastBoardsTab(
+                  tournamentId: _selectedTournamentId,
+                  roundId: _selectedRoundId ?? tournament.defaultRoundId,
+                  tournamentSlug: tournament.data.slug,
+                  showOnlyOngoingGames: filter == _BroadcastGameFilter.ongoing,
+                  teamFilter: _teamFilter,
+                ),
+                BroadcastPlayersTab(tournamentId: _selectedTournamentId),
+                if (tournament.data.teamTable == true) ...[
+                  BroadcastTeamsTab(
+                    roundId: _selectedRoundId ?? tournament.defaultRoundId,
+                    tournamentId: _selectedTournamentId,
+                    tournamentSlug: tournament.data.slug,
+                    showTeamScores: tournament.data.showTeamScores == true,
+                  ),
+                ],
+              ],
+            ),
+            bottomNavigationBar: _BottomBar(
+              tournament: tournament,
+              roundId: _selectedRoundId ?? tournament.defaultRoundId,
+              setTournamentId: setTournamentId,
+              setRoundId: setRoundId,
+            ),
+          ),
+          AsyncError() => PlatformScaffold(
+            extendBody: Theme.of(context).platform == TargetPlatform.iOS,
+            appBar: PlatformAppBar(title: AppBarTitleText(widget.broadcast.title, maxLines: 2)),
+            body: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Cannot load broadcast round'),
+                  TextButton(
+                    onPressed: () => ref.invalidate(broadcastRoundControllerProvider(roundId)),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _ => PlatformScaffold(
+            extendBody: Theme.of(context).platform == TargetPlatform.iOS,
+            appBar: PlatformAppBar(title: AppBarTitleText(widget.broadcast.title, maxLines: 2)),
+            body: const Center(child: CircularProgressIndicator.adaptive()),
+          ),
+        };
       case _:
-        return _buildContent(context, asyncTour, (
-          round: null,
-          isSubscribed: null,
-          hasError: false,
-        ));
+        return PlatformScaffold(
+          extendBody: Theme.of(context).platform == TargetPlatform.iOS,
+          appBar: PlatformAppBar(title: AppBarTitleText(widget.broadcast.title, maxLines: 2)),
+          body: const Center(child: CircularProgressIndicator.adaptive()),
+        );
     }
   }
 }
