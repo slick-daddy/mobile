@@ -1,5 +1,6 @@
 import 'package:deep_pick/deep_pick.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lichess_mobile/src/model/account/account_pref_types.dart';
 import 'package:lichess_mobile/src/model/account/ongoing_game.dart';
@@ -9,25 +10,24 @@ import 'package:lichess_mobile/src/model/user/user.dart';
 import 'package:lichess_mobile/src/network/aggregator.dart';
 import 'package:lichess_mobile/src/network/http.dart';
 
-/// A provider that fetches the current user's account information.
 final accountProvider = FutureProvider.autoDispose<User?>((Ref ref) {
   final authUser = ref.watch(authControllerProvider);
   if (authUser == null) return null;
   return ref.read(accountRepositoryProvider).getProfile();
 }, name: 'AccountProvider');
 
-/// A provider that fetches the current user's kid mode status.
 final kidModeProvider = FutureProvider.autoDispose<bool>((ref) async {
   final account = await ref.watch(accountProvider.future);
   return account?.kid ?? false;
 }, name: 'KidModeProvider');
 
-/// A provider for the [AccountRepository].
 final accountRepositoryProvider = Provider<AccountRepository>((ref) {
   final client = ref.watch(lichessClientProvider);
   final aggregator = ref.watch(aggregatorProvider);
   return AccountRepository(client, aggregator);
 }, name: 'AccountRepositoryProvider');
+
+final closeAccountMutation = Mutation<void>();
 
 class AccountRepository(final LichessClient client, final Aggregator aggregator) {
   Future<User> getProfile() {
@@ -74,10 +74,27 @@ class AccountRepository(final LichessClient client, final Aggregator aggregator)
     await client.postRead(uri, body: {prefKey: pref.toFormData});
   }
 
-  /// Bookmark the game for the given `id` if `bookmark` is true else unbookmark it
   Future<void> bookmark(GameId id, {required bool bookmark}) async {
     final uri = Uri(path: '/bookmark/$id', queryParameters: {'v': bookmark ? '1' : '0'});
     await client.postRead(uri);
+  }
+
+  Future<void> closeAccount({
+    required String username,
+    required String password,
+    String token = '',
+    required bool forever,
+  }) async {
+    final uri = Uri(path: '/account/close');
+    await client.postRead(
+      uri,
+      body: {
+        'username': username,
+        'passwd': password,
+        'token': token,
+        'forever': forever ? 'true' : 'false',
+      },
+    );
   }
 }
 

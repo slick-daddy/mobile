@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lichess_mobile/src/model/account/account_preferences.dart';
 import 'package:lichess_mobile/src/model/account/account_repository.dart';
@@ -5,6 +6,7 @@ import 'package:lichess_mobile/src/model/auth/auth_controller.dart';
 import 'package:lichess_mobile/src/network/http.dart';
 import 'package:lichess_mobile/src/utils/l10n_context.dart';
 import 'package:lichess_mobile/src/utils/navigation.dart';
+import 'package:lichess_mobile/src/view/settings/close_account_screen.dart';
 import 'package:lichess_mobile/src/widgets/adaptive_choice_picker.dart';
 import 'package:lichess_mobile/src/widgets/feedback.dart';
 import 'package:lichess_mobile/src/widgets/list.dart';
@@ -223,24 +225,16 @@ class _AccountPreferencesScreenState()
               header: SettingsSectionTitle(context.l10n.mobileDangerZone),
               hasLeading: true,
               children: [
-                if (Theme.of(context).platform == TargetPlatform.iOS)
-                  ListTile(
-                    leading: const Icon(Symbols.dangerous),
-                    title: Text(context.l10n.mobileDeleteYourAccount),
-                    trailing: const OpenInNewIcon(),
-                    onTap: () {
-                      launchUrl(lichessUri('/account/delete'));
-                    },
-                  )
-                else
-                  ListTile(
-                    leading: const Icon(Icons.dangerous_outlined),
-                    title: Text(context.l10n.settingsCloseAccount),
-                    trailing: const OpenInNewIcon(),
-                    onTap: () {
-                      launchUrl(lichessUri('/account/close'));
-                    },
-                  ),
+                ListTile(
+                  leading: const Icon(Symbols.dangerous),
+                  title: Text(context.l10n.settingsCloseAccount),
+                  trailing: Theme.of(context).platform == TargetPlatform.iOS
+                      ? const CupertinoListTileChevron()
+                      : null,
+                  onTap: () {
+                    Navigator.of(context).push(CloseAccountScreen.buildRoute());
+                  },
+                ),
               ],
             ),
           ],
