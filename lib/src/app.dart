@@ -31,10 +31,10 @@ import 'package:lichess_mobile/src/service/quick_actions.dart';
 import 'package:lichess_mobile/src/service/recap_service.dart';
 import 'package:lichess_mobile/src/service/shared_pgn_service.dart';
 import 'package:lichess_mobile/src/tab_navigation.dart';
+import 'package:lichess_mobile/src/tab_scaffold.dart';
 import 'package:lichess_mobile/src/theme.dart';
 import 'package:lichess_mobile/src/ui_event_coordinator.dart';
 import 'package:lichess_mobile/src/utils/screen.dart';
-import 'package:lichess_mobile/src/view/settings/close_account_screen.dart';
 import 'package:material_ui/material_ui.dart';
 
 const String _kIosAppGroupId = 'group.org.lichess.mobileV2.LichessWidgets';
@@ -254,7 +254,7 @@ class _AppState() extends ConsumerState<Application> {
             : NavigationBarTheme.of(context)
                   .copyWith(height: isShortVerticalScreen(context) ? 60 : null),
       ),
-      home: const PreviewLauncher(),
+      home: const MainTabScaffold(),
       navigatorObservers: [rootNavPageRouteObserver, rootNavRouteStackObserver],
     );
   }

@@ -2,8 +2,6 @@ import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lichess_mobile/src/model/account/account_repository.dart';
 import 'package:lichess_mobile/src/model/auth/auth_controller.dart';
-import 'package:lichess_mobile/src/model/common/id.dart';
-import 'package:lichess_mobile/src/model/user/user.dart';
 import 'package:lichess_mobile/src/network/http.dart';
 import 'package:lichess_mobile/src/styles/styles.dart';
 import 'package:lichess_mobile/src/utils/l10n_context.dart';
@@ -13,21 +11,6 @@ import 'package:lichess_mobile/src/widgets/platform.dart';
 import 'package:lichess_mobile/src/widgets/platform_alert_dialog.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
-
-class const PreviewLauncher({super.key}) extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return PlatformScaffold(
-      appBar: const PlatformAppBar(title: Text('Preview')),
-      body: Center(
-        child: FilledButton(
-          onPressed: () => Navigator.of(context).push(CloseAccountScreen.buildRoute()),
-          child: const Text('Open'),
-        ),
-      ),
-    );
-  }
-}
 
 class const CloseAccountScreen({super.key}) extends ConsumerStatefulWidget {
   static Route<dynamic> buildRoute() {
@@ -185,12 +168,7 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authUser =
-        ref.watch(authControllerProvider) ??
-        const AuthUser(
-          token: 'preview',
-          user: LightUser(id: UserId('preview'), name: 'Preview'),
-        );
+    final authUser = ref.watch(authControllerProvider);
     final kidMode = ref.watch(kidModeProvider).value ?? false;
     final closeState = ref.watch(closeAccountMutation);
 
