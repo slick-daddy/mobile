@@ -34,11 +34,36 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
   String? _tokenError;
 
   static const _pillBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+    borderRadius: BorderRadius.all(Radius.circular(28.0)),
   );
+
+  bool get _canSubmit {
+    if (_usernameController.text.trim().isEmpty || _passwordController.text.isEmpty) {
+      return false;
+    }
+    if (_showTokenField && _tokenController.text.trim().isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController.addListener(_onFieldsChanged);
+    _passwordController.addListener(_onFieldsChanged);
+    _tokenController.addListener(_onFieldsChanged);
+  }
+
+  void _onFieldsChanged() {
+    setState(() {});
+  }
 
   @override
   void dispose() {
+    _usernameController.removeListener(_onFieldsChanged);
+    _passwordController.removeListener(_onFieldsChanged);
+    _tokenController.removeListener(_onFieldsChanged);
     _usernameController.dispose();
     _passwordController.dispose();
     _tokenController.dispose();
@@ -165,122 +190,145 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
     } else {
       body = Form(
         key: _formKey,
-        child: ListView(
-          padding: Styles.bodySectionPadding,
-          children: [
-            Text(context.l10n.settingsWereSorryToSeeYouGo, style: TextTheme.of(context).titleLarge),
-            const SizedBox(height: 8.0),
-            Text(context.l10n.settingsCloseAccountAreYouSure),
-            const SizedBox(height: 8.0),
-            Text(context.l10n.settingsCantOpenSimilarAccount),
-            const SizedBox(height: 24.0),
-            TextFormField(
-              controller: _usernameController,
-              autocorrect: false,
-              enableSuggestions: false,
-              textCapitalization: TextCapitalization.none,
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                labelText: context.l10n.username,
-                border: _pillBorder,
-                enabledBorder: _pillBorder,
-                focusedBorder: _pillBorder,
-                errorBorder: _pillBorder,
-                focusedErrorBorder: _pillBorder,
-                errorText: _usernameError,
+        child: AutofillGroup(
+          child: ListView(
+            padding: Styles.bodySectionPadding,
+            children: [
+              Text(
+                context.l10n.settingsWereSorryToSeeYouGo,
+                style: ListTileTheme.of(context).subtitleTextStyle
+                    ?.copyWith(fontSize: TextTheme.of(context).bodySmall?.fontSize),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: _obscurePassword,
-              enableSuggestions: false,
-              autocorrect: false,
-              textInputAction: _showTokenField ? TextInputAction.next : TextInputAction.done,
-              decoration: InputDecoration(
-                labelText: context.l10n.password,
-                border: _pillBorder,
-                enabledBorder: _pillBorder,
-                focusedBorder: _pillBorder,
-                errorBorder: _pillBorder,
-                focusedErrorBorder: _pillBorder,
-                errorText: _passwordError,
-                suffixIcon: IconButton(
-                  icon: Icon(_obscurePassword ? Symbols.visibility : Symbols.visibility_off),
-                  tooltip: context.l10n.showPassword,
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                ),
+              const SizedBox(height: 8.0),
+              Text(
+                context.l10n.settingsCloseAccountAreYouSure,
+                style: TextTheme.of(context).bodyLarge,
               ),
-              onFieldSubmitted: (_) => _submit(),
-            ),
-            if (_showTokenField) ...[
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 8.0),
+              Text(
+                context.l10n.settingsCantOpenSimilarAccount,
+                style: ListTileTheme.of(context).subtitleTextStyle
+                    ?.copyWith(fontSize: TextTheme.of(context).bodySmall?.fontSize),
+              ),
+              const SizedBox(height: 24.0),
               TextFormField(
-                controller: _tokenController,
+                controller: _usernameController,
                 autocorrect: false,
                 enableSuggestions: false,
+                autofillHints: const [AutofillHints.username],
                 textCapitalization: TextCapitalization.none,
-                textInputAction: TextInputAction.done,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  labelText: context.l10n.tfaAuthenticationCode,
-                  helperText: context.l10n.tfaOpenTwoFactorApp,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  labelText: context.l10n.username,
+                  border: _pillBorder,
+                  enabledBorder: _pillBorder,
+                  focusedBorder: _pillBorder,
+                  errorBorder: _pillBorder,
+                  focusedErrorBorder: _pillBorder,
+                  errorText: _usernameError,
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: _obscurePassword,
+                enableSuggestions: false,
+                autocorrect: false,
+                autofillHints: const [AutofillHints.password],
+                textInputAction: _showTokenField ? TextInputAction.next : TextInputAction.done,
+                decoration: InputDecoration(
+                  labelText: context.l10n.password,
+                  border: _pillBorder,
+                  enabledBorder: _pillBorder,
+                  focusedBorder: _pillBorder,
+                  errorBorder: _pillBorder,
+                  focusedErrorBorder: _pillBorder,
+                  errorText: _passwordError,
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscurePassword ? Symbols.visibility : Symbols.visibility_off),
+                    tooltip: context.l10n.showPassword,
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
                   ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  ),
-                  errorBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  ),
-                  focusedErrorBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  ),
-                  errorText: _tokenError,
                 ),
                 onFieldSubmitted: (_) => _submit(),
               ),
+              if (_showTokenField) ...[
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _tokenController,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  textCapitalization: TextCapitalization.none,
+                  textInputAction: TextInputAction.done,
+                  decoration: InputDecoration(
+                    labelText: context.l10n.tfaAuthenticationCode,
+                    helperText: context.l10n.tfaOpenTwoFactorApp,
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                    errorBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                    focusedErrorBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                    errorText: _tokenError,
+                  ),
+                  onFieldSubmitted: (_) => _submit(),
+                ),
+              ],
+              const SizedBox(height: 16.0),
+              Card(
+                margin: EdgeInsets.zero,
+                clipBehavior: Clip.hardEdge,
+                child: CheckboxListTile(
+                  value: _forever,
+                  title: Text(
+                    context.l10n.settingsCloseAccountForeverLabel,
+                    style: TextTheme.of(context).bodyMedium,
+                  ),
+                  subtitle: Text(
+                    context.l10n.settingsCloseAccountForeverWarning,
+                    style: ListTileTheme.of(context).subtitleTextStyle
+                        ?.copyWith(fontSize: TextTheme.of(context).bodySmall?.fontSize),
+                  ),
+                  onChanged: pending
+                      ? null
+                      : (value) {
+                          setState(() {
+                            _forever = value ?? false;
+                          });
+                        },
+                ),
+              ),
+              const SizedBox(height: 24.0),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: ColorScheme.of(context).error,
+                  foregroundColor: ColorScheme.of(context).onError,
+                ),
+                onPressed: pending || !_canSubmit ? null : _submit,
+                child: pending
+                    ? const ButtonLoadingIndicator()
+                    : Text(context.l10n.settingsCloseAccount),
+              ),
+              const SizedBox(height: 8.0),
+              TextButton(
+                onPressed: pending ? null : () => Navigator.of(context).pop(),
+                child: Text(context.l10n.cancel),
+              ),
             ],
-            const SizedBox(height: 16.0),
-            Card.filled(
-              margin: EdgeInsets.zero,
-              child: CheckboxListTile(
-                value: _forever,
-                title: Text(context.l10n.settingsCloseAccountForeverLabel),
-                subtitle: Text(context.l10n.settingsCloseAccountForeverWarning),
-                onChanged: pending
-                    ? null
-                    : (value) {
-                        setState(() {
-                          _forever = value ?? false;
-                        });
-                      },
-              ),
-            ),
-            const SizedBox(height: 24.0),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: ColorScheme.of(context).error,
-                foregroundColor: ColorScheme.of(context).onError,
-              ),
-              onPressed: pending ? null : _submit,
-              child: pending
-                  ? const ButtonLoadingIndicator()
-                  : Text(context.l10n.settingsCloseAccount),
-            ),
-            const SizedBox(height: 8.0),
-            TextButton(
-              onPressed: pending ? null : () => Navigator.of(context).pop(),
-              child: Text(context.l10n.settingsCancelKeepAccount),
-            ),
-          ],
+          ),
         ),
       );
     }
