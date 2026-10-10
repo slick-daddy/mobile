@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lichess_mobile/src/model/account/account_repository.dart';
 import 'package:lichess_mobile/src/model/auth/auth_controller.dart';
+import 'package:lichess_mobile/src/model/common/id.dart';
+import 'package:lichess_mobile/src/model/user/user.dart';
 import 'package:lichess_mobile/src/network/http.dart';
 import 'package:lichess_mobile/src/styles/styles.dart';
 import 'package:lichess_mobile/src/utils/l10n_context.dart';
@@ -11,6 +13,21 @@ import 'package:lichess_mobile/src/widgets/platform.dart';
 import 'package:lichess_mobile/src/widgets/platform_alert_dialog.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
+
+class const PreviewLauncher({super.key}) extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return PlatformScaffold(
+      appBar: const PlatformAppBar(title: Text('Preview')),
+      body: Center(
+        child: FilledButton(
+          onPressed: () => Navigator.of(context).push(CloseAccountScreen.buildRoute()),
+          child: const Text('Open'),
+        ),
+      ),
+    );
+  }
+}
 
 class const CloseAccountScreen({super.key}) extends ConsumerStatefulWidget {
   static Route<dynamic> buildRoute() {
@@ -33,9 +50,12 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
   String? _passwordError;
   String? _tokenError;
 
-  static const _pillBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(28.0)),
-  );
+  OutlineInputBorder _pillBorder(Color color) {
+    return OutlineInputBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(28.0)),
+      borderSide: BorderSide(color: color),
+    );
+  }
 
   bool get _canSubmit {
     if (_usernameController.text.trim().isEmpty || _passwordController.text.isEmpty) {
@@ -89,7 +109,10 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog.adaptive(
-          title: Text(context.l10n.settingsCloseAccountAreYouSure),
+          title: Text(
+            context.l10n.settingsCloseAccountAreYouSure,
+            style: TextTheme.of(context).bodyLarge,
+          ),
           actions: [
             PlatformDialogAction(
               onPressed: () => Navigator.of(dialogContext).pop(),
@@ -162,7 +185,12 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authUser = ref.watch(authControllerProvider);
+    final authUser =
+        ref.watch(authControllerProvider) ??
+        const AuthUser(
+          token: 'preview',
+          user: LightUser(id: UserId('preview'), name: 'Preview'),
+        );
     final kidMode = ref.watch(kidModeProvider).value ?? false;
     final closeState = ref.watch(closeAccountMutation);
 
@@ -178,6 +206,8 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
     });
 
     final pending = closeState is MutationPending;
+    final outline = ColorScheme.of(context).outline;
+    final error = ColorScheme.of(context).error;
 
     Widget body;
     if (authUser == null) {
@@ -220,11 +250,12 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   labelText: context.l10n.username,
-                  border: _pillBorder,
-                  enabledBorder: _pillBorder,
-                  focusedBorder: _pillBorder,
-                  errorBorder: _pillBorder,
-                  focusedErrorBorder: _pillBorder,
+                  border: _pillBorder(outline.withValues(alpha: 0.5)),
+                  enabledBorder: _pillBorder(outline.withValues(alpha: 0.5)),
+                  focusedBorder: _pillBorder(outline),
+                  disabledBorder: _pillBorder(outline.withValues(alpha: 0.1)),
+                  errorBorder: _pillBorder(error.withValues(alpha: 0.5)),
+                  focusedErrorBorder: _pillBorder(error),
                   errorText: _usernameError,
                 ),
               ),
@@ -238,11 +269,12 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
                 textInputAction: _showTokenField ? TextInputAction.next : TextInputAction.done,
                 decoration: InputDecoration(
                   labelText: context.l10n.password,
-                  border: _pillBorder,
-                  enabledBorder: _pillBorder,
-                  focusedBorder: _pillBorder,
-                  errorBorder: _pillBorder,
-                  focusedErrorBorder: _pillBorder,
+                  border: _pillBorder(outline.withValues(alpha: 0.5)),
+                  enabledBorder: _pillBorder(outline.withValues(alpha: 0.5)),
+                  focusedBorder: _pillBorder(outline),
+                  disabledBorder: _pillBorder(outline.withValues(alpha: 0.1)),
+                  errorBorder: _pillBorder(error.withValues(alpha: 0.5)),
+                  focusedErrorBorder: _pillBorder(error),
                   errorText: _passwordError,
                   suffixIcon: IconButton(
                     icon: Icon(_obscurePassword ? Symbols.visibility : Symbols.visibility_off),
@@ -267,21 +299,12 @@ class _CloseAccountScreenState() extends ConsumerState<CloseAccountScreen> {
                   decoration: InputDecoration(
                     labelText: context.l10n.tfaAuthenticationCode,
                     helperText: context.l10n.tfaOpenTwoFactorApp,
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    errorBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    focusedErrorBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
+                    border: _pillBorder(outline.withValues(alpha: 0.5)),
+                    enabledBorder: _pillBorder(outline.withValues(alpha: 0.5)),
+                    focusedBorder: _pillBorder(outline),
+                    disabledBorder: _pillBorder(outline.withValues(alpha: 0.1)),
+                    errorBorder: _pillBorder(error.withValues(alpha: 0.5)),
+                    focusedErrorBorder: _pillBorder(error),
                     errorText: _tokenError,
                   ),
                   onFieldSubmitted: (_) => _submit(),
