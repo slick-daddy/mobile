@@ -53,6 +53,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mobileCancelTakebackOffer => 'Cancelar oferta de deshacer movimiento';
 
   @override
+  String get mobileCannotLoadBroadcastCalendar => 'Cannot load broadcast calendar';
+
+  @override
   String get mobileChallengeCreated => 'Desafío creado: Se te notificará cuando comience la partida.\nPuedes acceder a ella desde la pestaña de inicio.';
 
   @override
@@ -187,6 +190,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mobileNextMistake => 'Siguiente error';
 
   @override
+  String get mobileNextMonth => 'Next month';
+
+  @override
+  String get mobileNoBroadcastsThisMonth => 'No broadcasts this month';
+
+  @override
   String get mobileNoSearchResults => 'Sin resultados';
 
   @override
@@ -274,6 +283,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mobilePrefMagnifyDraggedPiece => 'Aumentar la pieza arrastrada';
+
+  @override
+  String get mobilePreviousMonth => 'Previous month';
 
   @override
   String get mobilePreviousPage => 'Anterior';
@@ -450,6 +462,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mobileTheme => 'Tema';
 
   @override
+  String get mobileToBeAnnounced => 'To be announced';
+
+  @override
   String get mobileTooManyLoginAttempts => 'Demasiados intentos. Vuelve a intentarlo más tarde.';
 
   @override
@@ -462,6 +477,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String mobileUnsupportedVariant(String param) {
     return 'La variante $param no es compatible con esta versión.';
   }
+
+  @override
+  String get mobileUpcomingAndPastTournaments => 'Upcoming and past tournaments';
 
   @override
   String get mobileUseSymmetricPieces => 'Usar piezas simétricas';

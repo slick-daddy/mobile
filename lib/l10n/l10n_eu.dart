@@ -53,6 +53,9 @@ class AppLocalizationsEu extends AppLocalizations {
   String get mobileCancelTakebackOffer => 'Bertan behera utzi atzera-egite eskaera';
 
   @override
+  String get mobileCannotLoadBroadcastCalendar => 'Cannot load broadcast calendar';
+
+  @override
   String get mobileChallengeCreated => 'Erronka sortu da: partida hasten denean jakinarazpena bidaliko duzugu.\nHasiera fitxatik sar zaitezke.';
 
   @override
@@ -187,6 +190,12 @@ class AppLocalizationsEu extends AppLocalizations {
   String get mobileNextMistake => 'Next mistake';
 
   @override
+  String get mobileNextMonth => 'Next month';
+
+  @override
+  String get mobileNoBroadcastsThisMonth => 'No broadcasts this month';
+
+  @override
   String get mobileNoSearchResults => 'Emaitzarik ez';
 
   @override
@@ -274,6 +283,9 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get mobilePrefMagnifyDraggedPiece => 'Handitu arrastatutako pieza';
+
+  @override
+  String get mobilePreviousMonth => 'Previous month';
 
   @override
   String get mobilePreviousPage => 'Aurrekoa';
@@ -450,6 +462,9 @@ class AppLocalizationsEu extends AppLocalizations {
   String get mobileTheme => 'Itxura';
 
   @override
+  String get mobileToBeAnnounced => 'To be announced';
+
+  @override
   String get mobileTooManyLoginAttempts => 'Too many attempts. Please try again later.';
 
   @override
@@ -462,6 +477,9 @@ class AppLocalizationsEu extends AppLocalizations {
   String mobileUnsupportedVariant(String param) {
     return '$param aldaera ezin da erabili bertsio honetan.';
   }
+
+  @override
+  String get mobileUpcomingAndPastTournaments => 'Upcoming and past tournaments';
 
   @override
   String get mobileUseSymmetricPieces => 'Use symmetric pieces';

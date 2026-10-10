@@ -53,6 +53,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mobileCancelTakebackOffer => 'Hủy đề nghị đi lại';
 
   @override
+  String get mobileCannotLoadBroadcastCalendar => 'Cannot load broadcast calendar';
+
+  @override
   String get mobileChallengeCreated => 'Đã thách đấu người chơi: Bạn sẽ được thông báo nếu trận đấu bắt đầu.\nBạn có thể truy cập trận đấu từ trang chủ.';
 
   @override
@@ -187,6 +190,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mobileNextMistake => 'Next mistake';
 
   @override
+  String get mobileNextMonth => 'Next month';
+
+  @override
+  String get mobileNoBroadcastsThisMonth => 'No broadcasts this month';
+
+  @override
   String get mobileNoSearchResults => 'Không có kết quả';
 
   @override
@@ -274,6 +283,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get mobilePrefMagnifyDraggedPiece => 'Phóng to quân cờ được kéo';
+
+  @override
+  String get mobilePreviousMonth => 'Previous month';
 
   @override
   String get mobilePreviousPage => 'Trang trước';
@@ -450,6 +462,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mobileTheme => 'Giao diện';
 
   @override
+  String get mobileToBeAnnounced => 'To be announced';
+
+  @override
   String get mobileTooManyLoginAttempts => 'Too many attempts. Please try again later.';
 
   @override
@@ -462,6 +477,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String mobileUnsupportedVariant(String param) {
     return 'Biến thể $param không được hỗ trợ trong phiên bản này.';
   }
+
+  @override
+  String get mobileUpcomingAndPastTournaments => 'Upcoming and past tournaments';
 
   @override
   String get mobileUseSymmetricPieces => 'Use symmetric pieces';

@@ -53,6 +53,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get mobileCancelTakebackOffer => 'Visszalépés kérésének visszavonása';
 
   @override
+  String get mobileCannotLoadBroadcastCalendar => 'Cannot load broadcast calendar';
+
+  @override
   String get mobileChallengeCreated => 'Kihívás elkészítve: Értesítünk amint elindul a játék.\nA kihívás a kezdőlapon található.';
 
   @override
@@ -187,6 +190,12 @@ class AppLocalizationsHu extends AppLocalizations {
   String get mobileNextMistake => 'Next mistake';
 
   @override
+  String get mobileNextMonth => 'Next month';
+
+  @override
+  String get mobileNoBroadcastsThisMonth => 'No broadcasts this month';
+
+  @override
   String get mobileNoSearchResults => 'Nincs találat.';
 
   @override
@@ -274,6 +283,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get mobilePrefMagnifyDraggedPiece => 'Fogott figura nagyítása';
+
+  @override
+  String get mobilePreviousMonth => 'Previous month';
 
   @override
   String get mobilePreviousPage => 'Előző';
@@ -450,6 +462,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get mobileTheme => 'Megjelenés';
 
   @override
+  String get mobileToBeAnnounced => 'To be announced';
+
+  @override
   String get mobileTooManyLoginAttempts => 'Too many attempts. Please try again later.';
 
   @override
@@ -462,6 +477,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String mobileUnsupportedVariant(String param) {
     return 'A $param variáns nem támogatott ebben a verzióban.';
   }
+
+  @override
+  String get mobileUpcomingAndPastTournaments => 'Upcoming and past tournaments';
 
   @override
   String get mobileUseSymmetricPieces => 'Use symmetric pieces';

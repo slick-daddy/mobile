@@ -53,6 +53,9 @@ class AppLocalizationsSq extends AppLocalizations {
   String get mobileCancelTakebackOffer => 'Anulojeni ofertën për prapakthim';
 
   @override
+  String get mobileCannotLoadBroadcastCalendar => 'Cannot load broadcast calendar';
+
+  @override
   String get mobileChallengeCreated => 'Sfida u krijua: Do të njoftoheni, kur të fillojë loja.\nMund ta përdorni që nga skeda shtëpi.';
 
   @override
@@ -187,6 +190,12 @@ class AppLocalizationsSq extends AppLocalizations {
   String get mobileNextMistake => 'Next mistake';
 
   @override
+  String get mobileNextMonth => 'Next month';
+
+  @override
+  String get mobileNoBroadcastsThisMonth => 'No broadcasts this month';
+
+  @override
   String get mobileNoSearchResults => 'Nuk ka rezultate';
 
   @override
@@ -274,6 +283,9 @@ class AppLocalizationsSq extends AppLocalizations {
 
   @override
   String get mobilePrefMagnifyDraggedPiece => 'Zmadho gurin e tërhequr';
+
+  @override
+  String get mobilePreviousMonth => 'Previous month';
 
   @override
   String get mobilePreviousPage => 'E mëparshmja';
@@ -450,6 +462,9 @@ class AppLocalizationsSq extends AppLocalizations {
   String get mobileTheme => 'Temë';
 
   @override
+  String get mobileToBeAnnounced => 'To be announced';
+
+  @override
   String get mobileTooManyLoginAttempts => 'Too many attempts. Please try again later.';
 
   @override
@@ -462,6 +477,9 @@ class AppLocalizationsSq extends AppLocalizations {
   String mobileUnsupportedVariant(String param) {
     return 'Varianti $param nuk mbulohet në këtë version.';
   }
+
+  @override
+  String get mobileUpcomingAndPastTournaments => 'Upcoming and past tournaments';
 
   @override
   String get mobileUseSymmetricPieces => 'Use symmetric pieces';

@@ -53,6 +53,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get mobileCancelTakebackOffer => 'Жүріс қайтару сұрауын тоқтату';
 
   @override
+  String get mobileCannotLoadBroadcastCalendar => 'Cannot load broadcast calendar';
+
+  @override
   String get mobileChallengeCreated => 'Шақыру құрылды: Ойын басталғанда хабар келеді.\nОйынға басты беттен кіре алатын боласыз.';
 
   @override
@@ -187,6 +190,12 @@ class AppLocalizationsKk extends AppLocalizations {
   String get mobileNextMistake => 'Next mistake';
 
   @override
+  String get mobileNextMonth => 'Next month';
+
+  @override
+  String get mobileNoBroadcastsThisMonth => 'No broadcasts this month';
+
+  @override
   String get mobileNoSearchResults => 'Нәтиже жоқ';
 
   @override
@@ -274,6 +283,9 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get mobilePrefMagnifyDraggedPiece => 'Тасты тартқанда үлкейту';
+
+  @override
+  String get mobilePreviousMonth => 'Previous month';
 
   @override
   String get mobilePreviousPage => 'Алдыңғы';
@@ -450,6 +462,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get mobileTheme => 'Кескін';
 
   @override
+  String get mobileToBeAnnounced => 'To be announced';
+
+  @override
   String get mobileTooManyLoginAttempts => 'Too many attempts. Please try again later.';
 
   @override
@@ -462,6 +477,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String mobileUnsupportedVariant(String param) {
     return 'Бұл нұсқада $param шахмат түрі қамтылмаған.';
   }
+
+  @override
+  String get mobileUpcomingAndPastTournaments => 'Upcoming and past tournaments';
 
   @override
   String get mobileUseSymmetricPieces => 'Use symmetric pieces';

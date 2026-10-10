@@ -82,7 +82,7 @@ class _BroadcastCalendarScreenState() extends ConsumerState<BroadcastCalendarScr
                 IconButton(
                   icon: const Icon(Icons.chevron_left),
                   onPressed: goToPreviousMonth,
-                  tooltip: 'Previous month',
+                  tooltip: context.l10n.mobilePreviousMonth,
                 ),
                 Expanded(
                   child: Container(
@@ -141,7 +141,7 @@ class _BroadcastCalendarScreenState() extends ConsumerState<BroadcastCalendarScr
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
                   onPressed: goToNextMonth,
-                  tooltip: 'Next month',
+                  tooltip: context.l10n.mobileNextMonth,
                 ),
               ],
             ),
@@ -152,12 +152,12 @@ class _BroadcastCalendarScreenState() extends ConsumerState<BroadcastCalendarScr
               child: switch (calendar) {
                 AsyncData(:final value) =>
                   value.isEmpty
-                      ? const CustomScrollView(
-                          physics: AlwaysScrollableScrollPhysics(),
+                      ? CustomScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
                           slivers: [
                             SliverFillRemaining(
                               hasScrollBody: false,
-                              child: Center(child: Text('No broadcasts this month')),
+                              child: Center(child: Text(context.l10n.mobileNoBroadcastsThisMonth)),
                             ),
                           ],
                         )
@@ -173,7 +173,7 @@ class _BroadcastCalendarScreenState() extends ConsumerState<BroadcastCalendarScr
                                     primary: false,
                                     pinned: true,
                                     title: switch (day.date) {
-                                      null => const AppBarTitleText('To be announced'),
+                                      null => AppBarTitleText(context.l10n.mobileToBeAnnounced),
                                       final date => AppBarTitleText(
                                         DateFormat.yMMMMd().format(date.toUtc()),
                                       ),
@@ -204,12 +204,12 @@ class _BroadcastCalendarScreenState() extends ConsumerState<BroadcastCalendarScr
                           children: [
                             const Icon(Icons.error_outline, size: 32),
                             const SizedBox(height: 16),
-                            const Text('Cannot load broadcast calendar'),
+                            Text(context.l10n.mobileCannotLoadBroadcastCalendar),
                             TextButton.icon(
                               onPressed: () =>
                                   ref.refresh(broadcastCalendarProvider(params).future),
                               icon: const Icon(Icons.refresh),
-                              label: const Text('Retry'),
+                              label: Text(context.l10n.retry),
                             ),
                           ],
                         ),

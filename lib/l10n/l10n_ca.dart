@@ -53,6 +53,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get mobileCancelTakebackOffer => 'Anul·la la petició per desfer la jugada';
 
   @override
+  String get mobileCannotLoadBroadcastCalendar => 'Cannot load broadcast calendar';
+
+  @override
   String get mobileChallengeCreated => 'Repte creat: Sereu notificats quan comenci la partida.\nPodeu accedir-hi des de la pantalla d\'inici.';
 
   @override
@@ -187,6 +190,12 @@ class AppLocalizationsCa extends AppLocalizations {
   String get mobileNextMistake => 'Següent errada';
 
   @override
+  String get mobileNextMonth => 'Next month';
+
+  @override
+  String get mobileNoBroadcastsThisMonth => 'No broadcasts this month';
+
+  @override
   String get mobileNoSearchResults => 'Sense resultats';
 
   @override
@@ -274,6 +283,9 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get mobilePrefMagnifyDraggedPiece => 'Magnifica la peça arrossegada';
+
+  @override
+  String get mobilePreviousMonth => 'Previous month';
 
   @override
   String get mobilePreviousPage => 'Anterior';
@@ -450,6 +462,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get mobileTheme => 'Tema';
 
   @override
+  String get mobileToBeAnnounced => 'To be announced';
+
+  @override
   String get mobileTooManyLoginAttempts => 'Massa intents. Torneu-ho a provar més tard.';
 
   @override
@@ -462,6 +477,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String mobileUnsupportedVariant(String param) {
     return 'La variant $param no és compatible amb aquesta versió.';
   }
+
+  @override
+  String get mobileUpcomingAndPastTournaments => 'Upcoming and past tournaments';
 
   @override
   String get mobileUseSymmetricPieces => 'Utilitzar peces simètriques';
