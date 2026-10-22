@@ -399,6 +399,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get mobileSettingsTouchFeedbackSubtitle => 'Quan s\'activa, el dispositiu produirà una petita vibració quan es mou o es captura una peça.';
 
   @override
+  String get mobileShare => 'Share';
+
+  @override
   String get mobileShareChallengeUrl => 'Comparteix l\'URL del repte';
 
   @override

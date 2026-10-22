@@ -399,6 +399,9 @@ class AppLocalizationsSr extends AppLocalizations {
   String get mobileSettingsTouchFeedbackSubtitle => 'Када је укључено, уређај ће кратко вибрирати када помериш или узмеш фигуру.';
 
   @override
+  String get mobileShare => 'Share';
+
+  @override
   String get mobileShareChallengeUrl => 'Share challenge URL';
 
   @override

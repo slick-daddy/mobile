@@ -399,6 +399,9 @@ class AppLocalizationsGl extends AppLocalizations {
   String get mobileSettingsTouchFeedbackSubtitle => 'Se está activada, o dispositivo vibrará ó moveres ou capturares unha peza.';
 
   @override
+  String get mobileShare => 'Share';
+
+  @override
   String get mobileShareChallengeUrl => 'Partillar URL de desafío';
 
   @override

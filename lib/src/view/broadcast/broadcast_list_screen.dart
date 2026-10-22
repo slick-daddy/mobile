@@ -3,16 +3,13 @@ import 'package:lichess_mobile/l10n/l10n.dart';
 import 'package:lichess_mobile/src/model/broadcast/broadcast_providers.dart';
 import 'package:lichess_mobile/src/utils/l10n_context.dart';
 import 'package:lichess_mobile/src/utils/navigation.dart';
-import 'package:lichess_mobile/src/view/broadcast/broadcast_calendar_screen.dart';
 import 'package:lichess_mobile/src/view/broadcast/broadcast_list_tile.dart';
 import 'package:lichess_mobile/src/view/broadcast/broadcast_search_screen.dart';
-import 'package:lichess_mobile/src/widgets/adaptive_bottom_sheet.dart';
-import 'package:lichess_mobile/src/widgets/buttons.dart';
-import 'package:lichess_mobile/src/widgets/filter.dart';
 import 'package:lichess_mobile/src/widgets/haptic_refresh_indicator.dart';
 import 'package:lichess_mobile/src/widgets/list.dart';
 import 'package:lichess_mobile/src/widgets/misc.dart';
 import 'package:lichess_mobile/src/widgets/platform.dart';
+import 'package:lichess_mobile/src/widgets/platform_context_menu_button.dart';
 import 'package:lichess_mobile/src/widgets/platform_search_bar.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -52,41 +49,18 @@ class _BroadcastListScreenState() extends State<BroadcastListScreen> {
         Navigator.of(context).push(BroadcastSearchScreen.buildRoute());
       },
     );
-    final calendarButton = SemanticIconButton(
-      icon: const Icon(Icons.calendar_month),
-      onPressed: () {
-        Navigator.of(context).push(BroadcastCalendarScreen.buildRoute());
-      },
-      semanticsLabel: context.l10n.broadcastBroadcastCalendar,
-    );
-    final filterButton = SemanticIconButton(
+    final filterButton = ContextMenuIconButton(
       icon: const Icon(Icons.filter_list),
       // TODO: translate
       semanticsLabel: 'Filter broadcasts',
-      onPressed: () => showAdaptiveBottomSheet<void>(
-        context: context,
-        isScrollControlled: true,
-        constraints: BoxConstraints(minHeight: MediaQuery.heightOf(context) * 0.4),
-        builder: (_) => StatefulBuilder(
-          builder: (context, setLocalState) {
-            return BottomSheetScrollableContainer(
-              padding: const EdgeInsets.all(16.0),
-              children: [
-                Filter<_BroadcastFilter>(
-                  filterType: FilterType.singleChoice,
-                  choices: _BroadcastFilter.values,
-                  choiceSelected: (choice) => filter == choice,
-                  choiceLabel: (category) => Text(category.l10n(context.l10n)),
-                  onSelected: (value, selected) {
-                    setLocalState(() => filter = value);
-                    setState(() => filter = value);
-                  },
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+      actions: [
+        for (final choice in _BroadcastFilter.values)
+          ContextMenuAction(
+            label: choice.l10n(context.l10n),
+            selected: choice == filter,
+            onPressed: () => setState(() => filter = choice),
+          ),
+      ],
     );
 
     if (Theme.of(context).platform == TargetPlatform.iOS) {
@@ -110,7 +84,7 @@ class _BroadcastListScreenState() extends State<BroadcastListScreen> {
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
         title: title,
-        actions: [searchButton, calendarButton, filterButton],
+        actions: [searchButton, filterButton],
       ),
     );
   }
